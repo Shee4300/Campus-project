@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Election</title>
+
+    <link rel="stylesheet" href="/votehubstyle.css">
+</head>
+
+<body>
+
+    <h1>Create Election</h1>
+
+    <form action="/api/elections" method="POST">
+
+        <div>
+            <label for="title">Election Title</label>
+            <input type="text" id="title" name="title" placeholder="Enter election title" required>
+        </div>
+
+        <div>
+            <label for="status">Election Status</label>
+            <select id="status" name="status" required>
+                <option value="">Select status</option>
+                <option value="ongoing">Ongoing</option>
+                <option value="upcoming">Upcoming</option>
+                <option value="completed">Completed</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="date">Election Date</label>
+            <input type="text" id="date" name="date" placeholder="8 August 2026" required>
+        </div>
+
+        <div>
+            <label for="votingTime">Voting Time</label>
+            <input type="text" id="votingTime" name="votingTime" placeholder="10 AM - 5 PM" required>
+        </div>
+
+        <button type="submit">Create Election</button>
+
+    </form>
+
+</body>
+
+</html>

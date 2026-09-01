@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Candidate</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/votehubstyle.css">
+</head>
+
+<body class="create-candidate-page">
+
+    <div class="candidate-container">
+
+        <div class="candidate-header">
+            <i class="fa-solid fa-user-tie"></i>
+
+            <h1>Create Candidate</h1>
+
+            <p>
+                Add a candidate to an existing election
+            </p>
+        </div>
+
+
+        <form action="/api/candidates" method="POST">
+
+            <!-- Candidate Name -->
+
+            <div class="form-group">
+
+                <label for="name">
+                    Candidate Name
+                </label>
+
+                <input type="text" id="name" name="name" placeholder="Enter candidate name" required>
+
+            </div>
+
+
+            <!-- Position -->
+
+            <div class="form-group">
+
+                <label for="position">
+                    Position
+                </label>
+
+                <input type="text" id="position" name="position" placeholder="e.g. President, Vice President" required>
+
+            </div>
+
+
+            <!-- Election -->
+
+            <div class="form-group">
+
+                <label for="election">
+                    Select Election
+                </label>
+
+                <select id="election" name="election" required>
+
+                    <option value="">
+                        Select an election
+                    </option>
+
+                    <% elections.forEach(election=> { %>
+
+                        <option value="<%= election._id %>">
+                            <%= election.title %>
+                        </option>
+
+                        <% }) %>
+
+                </select>
+
+            </div>
+
+
+            <!-- Submit -->
+
+            <button type="submit" class="create-candidate-btn">
+
+                <i class="fa-solid fa-plus"></i>
+
+                Add Candidate
+
+            </button>
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>

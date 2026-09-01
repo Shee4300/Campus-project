@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cast Vote</title>
+
+    <link rel="stylesheet" href="/votehubstyle.css">
+</head>
+
+<body class="create-vote-page">
+
+    <div class="vote-container">
+
+        <div class="vote-header">
+            <h1>Cast Vote</h1>
+            <p>Cast your vote in an election</p>
+        </div>
+
+        <form action="/api/votes" method="POST">
+
+            <!-- User -->
+            <div class="form-group">
+                <label for="user">Select User</label>
+
+                <select id="user" name="user" required>
+
+                    <option value="">Select a user</option>
+
+                    <% users.forEach(user=> { %>
+
+                        <option value="<%= user._id %>">
+                            <%= user.name %>
+                        </option>
+
+                        <% }); %>
+
+                </select>
+            </div>
+
+
+            <!-- Election -->
+            <div class="form-group">
+                <label for="election">Select Election</label>
+
+                <select id="election" name="election" required>
+
+                    <option value="">Select an election</option>
+
+                    <% elections.forEach(election=> { %>
+
+                        <option value="<%= election._id %>">
+                            <%= election.title %>
+                        </option>
+
+                        <% }); %>
+
+                </select>
+            </div>
+
+
+            <!-- Candidate -->
+            <div class="form-group">
+                <label for="candidate">Select Candidate</label>
+
+                <select id="candidate" name="candidate" required>
+
+                    <option value="">Select a candidate</option>
+
+                    <% candidates.forEach(candidate=> { %>
+
+                        <option value="<%= candidate._id %>">
+                            <%= candidate.name %>
+                        </option>
+
+                        <% }); %>
+
+                </select>
+            </div>
+
+
+            <!-- Submit -->
+            <button type="submit" class="create-candidate-btn">
+                Vote
+            </button>
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>

@@ -10,40 +10,54 @@
     <link rel="stylesheet" href="/votehubstyle.css">
 </head>
 
-<body>
+<body class="create-election-page">
 
-    <h1>Create Election</h1>
+    <div class="create-election-container">
 
-    <form action="/api/elections" method="POST">
+        <h1>Create Election</h1>
 
-        <div>
-            <label for="title">Election Title</label>
-            <input type="text" id="title" name="title" placeholder="Enter election title" required>
-        </div>
+        <p class="form-subtitle">
+            Create a new campus election
+        </p>
 
-        <div>
-            <label for="status">Election Status</label>
-            <select id="status" name="status" required>
-                <option value="">Select status</option>
-                <option value="ongoing">Ongoing</option>
-                <option value="upcoming">Upcoming</option>
-                <option value="completed">Completed</option>
-            </select>
-        </div>
+        <form class="create-election-form" action="/api/elections" method="POST">
 
-        <div>
-            <label for="date">Election Date</label>
-            <input type="text" id="date" name="date" placeholder="8 August 2026" required>
-        </div>
+            <div class="election-form-group">
+                <label for="title">Election Title</label>
 
-        <div>
-            <label for="votingTime">Voting Time</label>
-            <input type="text" id="votingTime" name="votingTime" placeholder="10 AM - 5 PM" required>
-        </div>
+                <input type="text" id="title" name="title" placeholder="Enter election title" required>
+            </div>
 
-        <button type="submit">Create Election</button>
+            <div class="election-form-group">
+                <label for="status">Election Status</label>
 
-    </form>
+                <select id="status" name="status" required>
+                    <option value="">Select status</option>
+                    <option value="ongoing">Ongoing</option>
+                    <option value="upcoming">Upcoming</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+
+            <div class="election-form-group">
+                <label for="date">Election Date</label>
+
+                <input type="text" id="date" name="date" placeholder="8 August 2026" required>
+            </div>
+
+            <div class="election-form-group">
+                <label for="votingTime">Voting Time</label>
+
+                <input type="text" id="votingTime" name="votingTime" placeholder="10 AM - 5 PM" required>
+            </div>
+
+            <button type="submit" class="create-election-btn">
+                Create Election
+            </button>
+
+        </form>
+
+    </div>
 
 </body>
 

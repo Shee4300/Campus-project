@@ -1060,3 +1060,268 @@ footer {
         justify-content: center;
     }
 }
+
+/* Create Election Page */
+/* Create Election Page */
+
+.create-election-page {
+    min-height: 100vh;
+    background-color: cornflowerblue;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
+.create-election-container {
+    width: 400px;
+    padding: 30px;
+    background-color: pink;
+    border-radius: 12px;
+    border: 2px solid cornflowerblue;
+    box-sizing: border-box;
+    transition: transform 0.3s ease;
+}
+
+.create-election-container:hover {
+    transform: scale(1.03);
+}
+
+.create-election-container h1 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.form-subtitle {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.create-election-form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.election-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.election-form-group label {
+    font-weight: 600;
+}
+
+.election-form-group input,
+.election-form-group select {
+    padding: 10px;
+    border: 2px solid cornflowerblue;
+    border-radius: 8px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+.election-form-group input:focus,
+.election-form-group select:focus {
+    outline: none;
+    border-color: #4f6fb3;
+}
+
+.create-election-btn {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 8px;
+    background-color: #4f6fb3;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.create-election-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Create Candidate Page */
+
+/* Create Candidate Page */
+
+.create-candidate-page {
+    min-height: 100vh;
+    background-color: cornflowerblue;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
+.candidate-container {
+    width: 400px;
+    padding: 30px;
+    background-color: pink;
+    border-radius: 12px;
+    border: 2px solid cornflowerblue;
+    box-sizing: border-box;
+    transition: transform 0.3s ease;
+}
+
+.candidate-container:hover {
+    transform: scale(1.03);
+}
+
+.candidate-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.candidate-header i {
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+.candidate-header h1 {
+    margin-bottom: 8px;
+}
+
+.candidate-header p {
+    margin: 0;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px;
+    border: 2px solid cornflowerblue;
+    border-radius: 8px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #4f6fb3;
+}
+
+.create-candidate-btn {
+    width: 100%;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 8px;
+    background-color: #4f6fb3;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.create-candidate-btn:hover {
+    transform: scale(1.05);
+}
+
+/*Vote*/
+
+
+.create-vote-page {
+    min-height: 100vh;
+    background-color: cornflowerblue;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
+.vote-container {
+    width: 400px;
+    padding: 30px;
+    background-color: pink;
+    border-radius: 12px;
+    border: 2px solid cornflowerblue;
+    box-sizing: border-box;
+    transition: transform 0.3s ease;
+}
+
+.vote-container:hover {
+    transform: scale(1.03);
+}
+
+.vote-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.vote-header i {
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+.vote-header h1 {
+    margin-bottom: 8px;
+}
+
+.vote-header p {
+    margin: 0;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px;
+    border: 2px solid cornflowerblue;
+    border-radius: 8px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #4f6fb3;
+}
+
+.create-vote-btn {
+    width: 100%;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 8px;
+    background-color: #4f6fb3;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.create-vote-btn:hover {
+    transform: scale(1.05);
+}

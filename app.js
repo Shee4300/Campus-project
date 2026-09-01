@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const express = require("express");
 const User = require("./models/User");
 const Election = require("./models/Election");
+const Candidate = require("./models/Candidate");
+const Vote = require("./models/Vote");
 const app = express();
 
 mongoose.connect(process.env.MONGO_URI)
@@ -61,7 +63,7 @@ app.post("/api/login", async (req, res) => {
         console.log("LOGIN ERROR:", error);
 
         res.status(500).json({
-            message: "Login failed"
+            message: "Login  failed"
         });
     }
 });
@@ -103,11 +105,11 @@ app.get("/create-election", (req, res) => {
 });
 
 
-app.get("/elections", async (req, res) => {
+app.get("/create-candidate", async (req, res) => {
     try {
         const elections = await Election.find();
 
-        res.render("elections", {
+        res.render("create-candidate", {
             elections
         });
 
@@ -117,6 +119,7 @@ app.get("/elections", async (req, res) => {
         res.status(500).send("Unable to load elections");
     }
 });
+
 
 
 
@@ -151,6 +154,93 @@ app.post("/api/elections", async (req, res) => {
         });
     }
 });
+
+app.post("/api/candidates", async (req, res) => {
+    try {
+        const { name, position, election } = req.body;
+
+        const newCandidate = new Candidate({
+            name,
+            position,
+            election
+        });
+
+        await newCandidate.save();
+
+        console.log("CANDIDATE SAVED:", newCandidate);
+
+        res.json({
+            message: "Candidate created successfully",
+            candidate: newCandidate
+        });
+
+    } catch (error) {
+        console.log("Candidate Error:", error);
+
+        res.status(500).json({
+            message: "Candidate creation failed"
+        });
+    }
+});
+app.get("/candidates", async (req, res) => {
+    try {
+        const candidates = await Candidate.find()
+            .populate("election");
+
+        res.render("candidates", {
+            candidates
+        });
+
+    } catch (error) {
+        console.log("Candidate fetch error:", error);
+
+        res.status(500).send("Unable to load candidates");
+    }
+});
+
+app.post("/api/votes", async (req, res) => {
+    try {
+        const { user, election, candidate } = req.body;
+        const newVote = new Vote({
+            user,
+            election,
+            candidate
+        });
+        await newVote.save();
+        console.log("VOTE SAVED:", newVote);
+        res.json({
+            message: "Vote created successfully",
+            vote: newVote
+        });
+    } catch (error) {
+        console.log("Vote error", error);
+        res.status(500).json({
+            message: "Vote creation failed"
+        });
+    }
+});
+
+
+
+app.get("/create-vote", async (req, res) => {
+    try {
+        const users = await User.find();
+        const elections = await Election.find();
+        const candidates = await Candidate.find();
+
+        res.render("create-vote", {
+            users,
+            elections,
+            candidates
+
+        });
+
+    } catch (error) {
+        console.log("Vote page fetch error:", error);
+        res.status(500).send("Unable to load vote page");
+    }
+});
+
 
 app.get("/resources", (req, res) => {
     res.render("resources");

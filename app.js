@@ -7,6 +7,7 @@ const Election = require("./models/Election");
 const Candidate = require("./models/Candidate");
 const Vote = require("./models/Vote");
 const app = express();
+app.use(express.static(__dirname))
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {

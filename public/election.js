@@ -1,70 +1,127 @@
-// REGISTER
-
+//register form
 let registerForm = document.getElementById("register-form");
-
 if (registerForm) {
-    registerForm.addEventListener("submit", function (event) {
+    registerForm.addEventListener("submit", async function (event) {
         event.preventDefault();
 
-        let userName = document.getElementById("name").value.trim();
+        let userName = document.getElementById("register").value.trim();
         let userEmail = document.getElementById("email").value.trim();
+        let userNumber = document.getElementById("number").value;
         let userPassword = document.getElementById("password").value;
+        let confirmPassword = document.getElementById("confirm-password").value;
 
-        if (userName === "" || userEmail === "" || userPassword === "") {
-            alert("Please fill all the fields.");
+        if (userName === "" || userEmail === "" || userNumber === "" || userPassword === "" || confirmPassword == "") {
+            alert("Please fill every fields");
             return;
         }
-
         if (userPassword.length < 6) {
-            alert("Password must contain at least 6 characters.");
+            alert("Password charcters should be greater than 6");
             return;
         }
+        if (confirmPassword !== userPassword) {
+            alert("Please check the correct password");
+            return;
+        }
+        try {
+            const response = await fetch("/api/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: userName,
+                    email: userEmail,
+                    number: userNumber,
+                    password: userPassword,
 
-        localStorage.setItem("userName", userName);
-        localStorage.setItem("userEmail", userEmail);
-        localStorage.setItem("userPassword", userPassword);
+                })
+            })
+            const data = await response.json();
+            if (response.ok) {
+                alert(data.message);
+                window.location.href = "/";
+            } else {
+                alert(data.message);
+            }
 
-        alert("Registration successful!");
+        } catch (error) {
+            console.log(error);
+            alert("Something went wrong. Please try again.");
+        }
+    });
+}
+// PASSWORD TOGGLE EYE
 
-        registerForm.reset();
+let passwordInput = document.getElementById("password");
+let toggleEye = document.querySelector(".toggle-eye");
 
-        window.location.href = "login.html";
+if (passwordInput && toggleEye) {
+    toggleEye.addEventListener("click", function () {
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+        } else {
+            passwordInput.type = "password";
+        }
+
     });
 }
 
 
-// LOGIN
+// CONFIRM PASSWORD TOGGLE EYE
 
+let confirmPasswordInput = document.getElementById("confirm-password");
+let confirmToggleEye = document.querySelector(".confirm-toggle-eye");
+
+if (confirmPasswordInput && confirmToggleEye) {
+    confirmToggleEye.addEventListener("click", function () {
+
+        if (confirmPasswordInput.type === "password") {
+            confirmPasswordInput.type = "text";
+        } else {
+            confirmPasswordInput.type = "password";
+        }
+
+    });
+}
+//login
 let loginForm = document.getElementById("login-form");
-
 if (loginForm) {
-    loginForm.addEventListener("submit", function (event) {
+    loginForm.addEventListener("submit", async function (event) {
         event.preventDefault();
 
-        let loginEmail = document.getElementById("email").value.trim();
-        let loginPassword = document.getElementById("password").value;
+        let userEmail = document.getElementById("login").value.trim();
+        let userPassword = document.getElementById("password").value;
 
-        let savedEmail = localStorage.getItem("userEmail");
-        let savedPassword = localStorage.getItem("userPassword");
-
-        if (loginEmail === "" || loginPassword === "") {
-            alert("Please enter email and password.");
+        if (userEmail === "" || userPassword === "") {
+            alert("Please fill both fields.");
             return;
         }
 
-        if (
-            loginEmail === savedEmail &&
-            loginPassword === savedPassword
-        ) {
-            localStorage.setItem("isLoggedIn", "true");
+        try {
+            const response = await fetch("/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: userEmail,
+                    password: userPassword
+                })
+            });
 
-            alert("Login successful!");
+            const data = await response.json();
 
-            loginForm.reset();
+            if (response.ok) {
+                alert(data.message);
+                window.location.href = "/";
+            } else {
+                alert(data.message);
+            }
 
-            window.location.href = "votehub.html";
-        } else {
-            alert("Invalid email or password.");
+        } catch (error) {
+            console.log(error);
+            alert("Something went wrong. Please try again.");
         }
     });
 }
@@ -73,7 +130,7 @@ if (loginForm) {
 // ELECTIONS
 let ongoing = document.getElementById("ongoing");
 
-if (ongoing) {
+if (ongoing) {//
     ongoing.addEventListener("click", function () {
         alert("Campus Leadership Election is  currently ongoing ");
     });
@@ -102,7 +159,6 @@ if (calendar) {
         alert("Election Calendar selected.");
     });
 }
-
 
 // RESOURCES
 

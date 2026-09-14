@@ -6,7 +6,6 @@ body {
     overflow-x: hidden;
 }
 
-/*Navbar*/
 a {
     text-decoration: none;
 }
@@ -58,34 +57,521 @@ a {
     color: white;
 }
 
+
+
 .login-page {
     min-height: 100vh;
-    background-color: cornflowerblue;
+    background: linear-gradient(135deg, #4f6fb3 0%, #5b7ce0 45%, #7b8ef0 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-
+    position: relative;
+    overflow: hidden;
+    padding: 40px 20px;
+    box-sizing: border-box;
 }
 
-.login-page form {
-    width: 400px;
-    padding: 30px;
+.login-page::before,
+.login-page::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    z-index: 0;
+}
+
+.login-page::before {
+    width: 500px;
+    height: 500px;
+    top: -220px;
+    left: -150px;
+}
+
+.login-page::after {
+    width: 600px;
+    height: 600px;
+    bottom: -280px;
+    right: -180px;
+}
+
+.login-page #login-form {
+    position: relative;
+    z-index: 1;
     background-color: white;
-    border-radius: 12px;
-    border: 2px solid cornflowerblue;
+    border-radius: 20px;
+    padding: 45px 45px 35px;
+    width: 400px;
+    max-width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
 }
+
+
+.login-page .upper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.login-page .logo-badge {
+    width: 55px;
+    height: 55px;
+    min-width: 55px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #2563eb, #4f6fb3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.35);
+}
+
+.login-page .logo-badge i {
+    color: white;
+    font-size: 22px;
+}
+
+.login-page .icons {
+    text-align: left;
+}
+
+.login-page .icons h3 {
+    margin: 0;
+    padding: 0;
+    font-size: 22px;
+    color: #172554;
+}
+
+.login-page .icons h3 span {
+    color: rgb(37, 99, 235);
+}
+
+.login-page .icons p {
+    margin: 2px 0 0;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+
+.login-page .start-vote {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.login-page .start-vote h2 {
+    margin: 0 0 8px;
+    font-size: 26px;
+    color: #172554;
+}
+
+.login-page .start-vote p {
+    margin: 0;
+    font-size: 14px;
+    color: #6b7280;
+}
+
 
 .login-page .form-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+.login-page .form-group label {
+    font-weight: 700;
+    font-size: 14px;
+    color: #172554;
+}
+
+.login-page .login-box,
+.login-page .password-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 2px solid #dbe4f3;
+    border-radius: 10px;
+    padding: 0 14px;
+    transition: border-color 0.2s ease;
+}
+
+.login-page .login-box:focus-within,
+.login-page .password-box:focus-within {
+    border-color: rgb(37, 99, 235);
+}
+
+.login-page .login-box i,
+.login-page .password-box i:first-child {
+    color: #9aa5b8;
+    font-size: 15px;
+    margin-right: 10px;
+}
+
+.login-page .login-box input,
+.login-page .password-box input {
+    border: none;
+    outline: none;
+    flex: 1;
+    padding: 13px 0;
+    font-size: 14px;
+    background: transparent;
+    font-family: inherit;
+}
+
+.login-page .password-box .toggle-eye {
+    margin-left: 10px;
+    margin-right: 0;
+    cursor: pointer;
+}
+
+
+.login-page .paragraph {
+    text-align: right;
     margin-bottom: 20px;
 }
 
-.login-page .form-group button:hover {
-    background-color: #2563eb;
-    font-weight: bold;
+.login-page .paragraph a {
+    color: rgb(37, 99, 235);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.login-page .paragraph a:hover {
+    text-decoration: underline;
+}
+
+
+.login-page .login-button button {
+    width: 100%;
+    height: 52px;
+    border: none;
+    border-radius: 10px;
+    background-color: rgb(37, 99, 235);
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
     cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.login-page .login-button button:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+
+.login-page .or {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #9aa5b8;
+    font-size: 12px;
+    margin: 22px 0;
+}
+
+.login-page .or::before,
+.login-page .or::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: #e2e8f0;
+}
+
+.login-page .or span {
+    padding: 0 12px;
+}
+
+
+.login-page .complete {
+    margin-bottom: 20px;
+}
+
+.login-page .complete .create-account {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    height: 52px;
+    box-sizing: border-box;
+    border: 2px solid rgb(37, 99, 235);
+    border-radius: 10px;
+    color: rgb(37, 99, 235);
+    font-weight: 700;
+    font-size: 15px;
+    transition: all 0.2s ease;
+}
+
+.login-page .complete .create-account:hover {
+    background-color: rgb(37, 99, 235);
+    color: white;
+}
+
+
+.login-page .expressso p {
+    text-align: center;
+    margin: 0;
+    font-size: 13px;
+    color: rgb(37, 99, 235);
+    font-weight: 600;
+}
+
+@media (max-width: 480px) {
+    .login-page #login-form {
+        padding: 35px 25px 25px;
+    }
+}
+
+.icons h3 {
+
+    padding-left: 100px;
+}
+
+.register-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #4f6fb3 0%, #5b7ce0 45%, #7b8ef0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
+.register-page::before,
+.register-page::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    z-index: 0;
+}
+
+.register-page::before {
+    width: 500px;
+    height: 500px;
+    top: -220px;
+    left: -150px;
+}
+
+.register-page::after {
+    width: 600px;
+    height: 600px;
+    bottom: -280px;
+    right: -180px;
+}
+
+.register-page #register-form {
+    position: relative;
+    z-index: 1;
+    background-color: white;
+    border-radius: 20px;
+    padding: 45px 45px 35px;
+    width: 420px;
+    max-width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+}
+
+.register-page .weird {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.register-page .host-you {
+    width: 55px;
+    height: 55px;
+    min-width: 55px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #2563eb, #4f6fb3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.35);
+}
+
+.register-page .host-you i {
+    color: white;
+    font-size: 22px;
+}
+
+.register-page .noyou {
+    text-align: left;
+}
+
+.register-page .noyou h3 {
+    margin: 0;
+    padding: 0;
+    font-size: 22px;
+    color: #172554;
+}
+
+.register-page .noyou h3 span {
+    color: rgb(37, 99, 235);
+}
+
+.register-page .noyou p {
+    margin: 2px 0 0;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.register-page .eager-vote {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.register-page .eager-vote h2 {
+    margin: 0 0 8px;
+    font-size: 26px;
+    color: #172554;
+}
+
+.register-page .eager-vote p {
+    margin: 0;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.register-page .register-pace {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.register-page .register-pace label {
+    font-weight: 700;
+    font-size: 14px;
+    color: #172554;
+}
+
+.register-page .name-box,
+.register-page .email-border,
+.register-page .phone-box,
+.register-page .password-bordert,
+.register-page .password-nou {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 2px solid #dbe4f3;
+    border-radius: 10px;
+    padding: 0 14px;
+    transition: border-color 0.2s ease;
+}
+
+.register-page .name-box:focus-within,
+.register-page .email-border:focus-within,
+.register-page .phone-box:focus-within,
+.register-page .password-bordert:focus-within,
+.register-page .password-nou:focus-within {
+    border-color: rgb(37, 99, 235);
+}
+
+.register-page .name-box i,
+.register-page .email-border i,
+.register-page .phone-box i,
+.register-page .password-bordert i,
+.register-page .password-nou i {
+    color: #9aa5b8;
+    font-size: 15px;
+    margin-right: 10px;
+}
+
+.register-page .name-box input,
+.register-page .email-border input,
+.register-page .phone-box input,
+.register-page .password-bordert input,
+.register-page .password-nou input {
+    border: none;
+    outline: none;
+    flex: 1;
+    padding: 13px 0;
+    font-size: 14px;
+    background: transparent;
+    font-family: inherit;
+}
+
+.register-page .register-button {
+    margin-top: 5px;
+}
+
+.register-page .register-button button {
+    width: 100%;
+    height: 52px;
+    border: none;
+    border-radius: 10px;
+    background-color: rgb(37, 99, 235);
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.register-page .register-button button:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+.register-page .or {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #9aa5b8;
+    font-size: 12px;
+    margin: 22px 0;
+}
+
+.register-page .or::before,
+.register-page .or::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: #e2e8f0;
+}
+
+.register-page .or span {
+    padding: 0 12px;
+}
+
+.register-page .compete .an-account {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    height: 52px;
+    box-sizing: border-box;
+    border: 2px solid rgb(37, 99, 235);
+    border-radius: 10px;
+    color: rgb(37, 99, 235);
+    font-weight: 700;
+    font-size: 14px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.register-page .compete .an-account:hover {
+    background-color: rgb(37, 99, 235);
+    color: white;
+}
+
+@media (max-width: 480px) {
+    .register-page #register-form {
+        padding: 35px 25px 25px;
+    }
 }
 
 .center {
@@ -159,34 +645,7 @@ a {
     color: white;
 }
 
-.register-page {
-    min-height: 100vh;
-    background-color: cornflowerblue;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
-.register-page form {
-    background-color: white;
-    border-radius: 12px;
-    border: 2px solid cornflowerblue;
-    padding: 30px;
-    width: 400px;
-}
-
-.register-page .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 20px;
-}
-
-.register-page .form-group button:hover {
-    background-color: #2563eb;
-    font-weight: bold;
-    cursor: pointer;
-}
 
 .menu-navbar {
     background-color: #4f6fb3;

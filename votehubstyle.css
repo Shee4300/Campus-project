@@ -1519,3 +1519,101 @@ footer {
         justify-content: center;
     }
 }
+
+@media (max-width: 768px) {
+    .top-navbar {
+        position: static;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .center {
+        position: static;
+        transform: none;
+        order: -1;
+    }
+
+    .left,
+    .right {
+        position: static;
+        margin: 0;
+        padding: 0;
+    }
+
+    .left a,
+    .right a {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .hero-section {
+        grid-template-columns: 1fr;
+        padding: 40px 20px;
+        gap: 40px;
+    }
+
+    .hero-content-left-side {
+        margin-left: 0;
+    }
+
+    .trusted-badge,
+    .platform {
+        margin-left: 0;
+    }
+
+    .secure {
+        font-size: 36px;
+        white-space: normal;
+    }
+
+    .security-badge {
+        width: 90%;
+        box-sizing: border-box;
+        padding: 25px;
+    }
+
+    .shield {
+        width: 130px;
+        height: 130px;
+    }
+
+    .shield i {
+        font-size: 60px;
+    }
+
+    .ongoing-elections,
+    .upcoming-elections,
+    .completed-elections,
+    .election-calendar,
+    .pricing .pricing-cards,
+    .Compare-plans .planning,
+    .resource-card,
+    .resource-info,
+    .contact-page .email,
+    .contact-page .contact-helpline,
+    .contact-page .technical-support,
+    .contact-page .send-us-a-message {
+        width: 90%;
+        max-width: 500px;
+        box-sizing: border-box;
+    }
+
+    .planning {
+        overflow-x: auto;
+        display: block;
+    }
+
+    .buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .start-btn,
+    .demo-btn {
+        width: 100%;
+        max-width: 300px;
+    }
+
+}

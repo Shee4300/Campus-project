@@ -27,8 +27,7 @@
 
         <% elections .filter(election=> election.status === "ongoing")
             .forEach(election => { %>
-
-            <div class="election-card" data-election-id="<%= eletion._id %>">
+            <div class="election-card" data-election-id="<%= election._id %>">
 
                 <h3>
                     <%= election.title %>

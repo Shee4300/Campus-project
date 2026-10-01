@@ -1,4 +1,5 @@
-//register form
+console.log("ELECTION JS FILE LOADED");
+//register form 
 let registerForm = document.getElementById("register-form");
 if (registerForm) {
     registerForm.addEventListener("submit", async function (event) {
@@ -15,7 +16,7 @@ if (registerForm) {
             return;
         }
         if (userPassword.length < 6) {
-            alert("Password charcters should be greater than 6");
+            alert("Password charcters should at least 6 characters ");
             return;
         }
         if (confirmPassword !== userPassword) {
@@ -38,6 +39,7 @@ if (registerForm) {
             })
             const data = await response.json();
             if (response.ok) {
+
                 alert(data.message);
                 window.location.href = "/";
             } else {
@@ -50,25 +52,23 @@ if (registerForm) {
         }
     });
 }
-// PASSWORD TOGGLE EYE
+// PASSWORD TOGGLE EYE  
 
 let passwordInput = document.getElementById("password");
-let toggleEye = document.querySelector(".toggle-eye");
+let ToggleEye = document.getElementById(".toggle-eye");
 
-if (passwordInput && toggleEye) {
-    toggleEye.addEventListener("click", function () {
-
+if (passwordInput && ToggleEye) {
+    ToggleEye.addEventListener("click", function () {
         if (passwordInput.type === "password") {
             passwordInput.type = "text";
+
         } else {
             passwordInput.type = "password";
         }
-
     });
 }
 
-
-// CONFIRM PASSWORD TOGGLE EYE
+// CONFIRM PASSWORD TOGGLE EYE  
 
 let confirmPasswordInput = document.getElementById("confirm-password");
 let confirmToggleEye = document.querySelector(".confirm-toggle-eye");
@@ -84,7 +84,7 @@ if (confirmPasswordInput && confirmToggleEye) {
 
     });
 }
-//login
+//login  
 let loginForm = document.getElementById("login-form");
 if (loginForm) {
     loginForm.addEventListener("submit", async function (event) {
@@ -113,8 +113,10 @@ if (loginForm) {
             const data = await response.json();
 
             if (response.ok) {
+                console.log("LOGIN SUCCESS");
+                console.log("JWT TOKEN:", data.token);
                 alert(data.message);
-                window.location.href = "/";
+                //window.location.href = "/";
             } else {
                 alert(data.message);
             }
@@ -127,41 +129,155 @@ if (loginForm) {
 }
 
 
+// ELECTIONS  
 // ELECTIONS
-let ongoing = document.getElementById("ongoing");
 
-if (ongoing) {//
-    ongoing.addEventListener("click", function () {
-        alert("Campus Leadership Election is  currently ongoing ");
+let ongoingButtons = document.querySelectorAll(".make-ongoing-btn");
+
+ongoingButtons.forEach(function (button) {
+
+    button.addEventListener("click", async function () {
+
+        let electionId = button.dataset.electionId;
+
+        try {
+
+            const response = await fetch("/api/elections/ongoing", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    electionId: electionId
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(data.message);
+                window.location.reload();
+            } else {
+                alert(data.message);
+            }
+
+        } catch (error) {
+            console.log(error);
+            alert("Something went wrong. Please try again.");
+        }
+
     });
-}
 
-let upcoming = document.getElementById("upcoming");
+});
 
-if (upcoming) {
-    upcoming.addEventListener("click", function () {
-        alert("Student Council Election is upcoming.");
+
+let completedButtons = document.querySelectorAll(".make-completed-btn");
+
+completedButtons.forEach(function (button) {
+
+    button.addEventListener("click", async function () {
+
+        let electionId = button.dataset.electionId;
+
+        try {
+
+            const response = await fetch("/api/elections/completed", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    electionId: electionId
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(data.message);
+                window.location.reload();
+            } else {
+                alert(data.message);
+            }
+
+        } catch (error) {
+            console.log(error);
+            alert("Something went wrong. Please try again.");
+        }
+
     });
-}
 
-let completed = document.getElementById("completed");
-
-if (completed) {
-    completed.addEventListener("click", function () {
-        alert("This election has already been completed.");
-    });
-}
+});
 
 let calendar = document.getElementById("calendar");
 
 if (calendar) {
-    calendar.addEventListener("click", function () {
-        alert("Election Calendar selected.");
+    calendar.addEventListener("click", async function () {
+        try {
+            const response = await fetch("/api/elections/calendar", {
+                method: "POST",
+            });
+            const data = await response.json();
+            if (response.ok) {
+                alert(data.message);
+            } else {
+                alert("Calendar is not available .")
+            }
+        }
+        catch (error) {
+            console.log("error");
+            alert("Something went wrong. Please try again.")
+        }
+    });
+
+}
+let voteForm = document.getElementById("vote-form");
+
+if (voteForm) {
+    voteForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const selectedCandidate = document.querySelector(
+            'input[name="candidate"]:checked'
+        );
+        if (!selectedCandidate) {
+            alert("Please select a candidate");
+            return;
+        }
+        const candidateId = selectedCandidate.value;
+        const electionId = voteForm.dataset.electionId;
+
+        console.log("Election ID:", electionId);
+        console.log("Candidate ID:", candidateId);
+
+        console.log("Selected Candidate ID:", candidateId);
+        const response = await fetch("/api/votes", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                election: electionId,
+                candidate: candidateId
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert(data.message);
+        } else {
+            alert(data.message);
+        }
     });
 }
 
-// RESOURCES
 
+
+
+
+
+// RESOURCES
 let resourceCards = document.querySelectorAll(".resource-card");
 
 resourceCards.forEach(function (card) {
@@ -171,7 +287,7 @@ resourceCards.forEach(function (card) {
 });
 
 
-// FAQ
+// FAQ  
 
 let faq = document.getElementById("FAQ-info");
 
@@ -186,7 +302,7 @@ if (faq) {
 }
 
 
-// CONTACT
+// CONTACT  
 
 let contactButton = document.querySelector(
     ".send-us-a-message button"
@@ -199,7 +315,7 @@ if (contactButton) {
 }
 
 
-// PRICING
+// PRICING  
 
 let pricingCards = document.querySelectorAll(".pricing-cards");
 
@@ -215,7 +331,7 @@ pricingCards.forEach(function (card) {
 });
 
 
-// DEMO VIDEO
+// DEMO VIDEO  
 
 let demoVideo = document.querySelector("video");
 
@@ -235,7 +351,7 @@ if (demoVideo) {
 }
 
 
-// USER LOGIN STATUS
+// USER LOGIN STATUS  
 
 let loggedIn = localStorage.getItem("isLoggedIn");
 
@@ -244,7 +360,7 @@ if (loggedIn === "true") {
 }
 
 
-// LOGOUT
+// LOGOUT  
 
 let logoutButton = document.getElementById("logout");
 

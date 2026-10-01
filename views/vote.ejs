@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Create Vote</title>
+    <title>Vote - <%= election.title %>
+    </title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 
@@ -18,34 +19,60 @@
 </head>
 
 <body class="create-vote-page">
+
     <div class="vote-container">
+
         <div class="vote-header">
-            <i class="fa-solid fa=box-ballot"></i>
-            <h1>Create Vote</h1>
+
+            <i class="fa-solid fa-box-ballot"></i>
+
+            <h1>
+                <%= election.title %>
+            </h1>
+
             <p>
-                Add a vote to an user
+                Select your candidate and submit your vote
             </p>
+
         </div>
-        <form class="/api/votes" method="POST">
-            <div class="form-group">
-                <label for="name">
-                    Username
-                </label>
-                <input type="text" id="name" name="name" placeholder="Enter user name" required>
 
 
+        <form id="vote-form" data-election-id="<%= election._id %>">
+
+            <% candidates.forEach(candidate=> { %>
+
+                <div class="candidate-option">
+
+                    <label>
+
+                        <input type="radio" name="candidate" value="<%= candidate._id %>" required>
+
+                        <span>
+                            <%= candidate.name %>
+                        </span>
+
+                    </label>
+
+                    <p>
+                        Position: <%= candidate.position %>
+                    </p>
+
+                </div>
+
+                <% }) %>
 
 
-
-
-            </div>
-
-
+                    <button type="submit">
+                        Submit Vote
+                    </button>
 
         </form>
 
-
-
-
     </div>
+
+
+    <script src="/election.js"></script>
+
 </body>
+
+</html>

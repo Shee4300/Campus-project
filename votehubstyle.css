@@ -752,6 +752,9 @@ a {
     gap: 15px;
 }
 
+
+
+
 .election-page .ongoing-elections:hover {
     transform: scale(1.05);
 }
@@ -772,12 +775,7 @@ a {
 
 }
 
-.election-card {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
 
-}
 
 .election-page .upcoming-elections:hover {
     transform: scale(1.05);
@@ -798,11 +796,8 @@ a {
     transition: transform 0.3s ease;
 }
 
-.election-card {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
+
+
 
 .election-page .completed-elections:hover {
     transform: scale(1.05);
@@ -1614,6 +1609,138 @@ footer {
     .demo-btn {
         width: 100%;
         max-width: 300px;
+    }
+
+}
+
+/* CREATE ELECTION */
+
+.create-election-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+    background-color: rgb(232, 243, 255);
+}
+
+.create-election-container {
+    width: 100%;
+    max-width: 650px;
+    background-color: white;
+    padding: 40px;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(79, 111, 179, 0.15);
+    box-sizing: border-box;
+}
+
+.create-election-container h1 {
+    margin: 0;
+    text-align: center;
+    color: #4f6fb3;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.form-subtitle {
+    margin: 10px 0 30px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.create-election-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.election-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.election-form-group label {
+    color: #334155;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.election-form-group input,
+.election-form-group select {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    color: #334155;
+    background-color: #ffffff;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.election-form-group input::placeholder {
+    color: #9ca3af;
+}
+
+.election-form-group input:focus,
+.election-form-group select:focus {
+    border-color: #4f6fb3;
+    box-shadow: 0 0 0 3px rgba(79, 111, 179, 0.1);
+}
+
+.create-election-btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 8px;
+    background-color: #4f6fb3;
+    color: white;
+    font-family: "Montserrat", sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.create-election-btn:hover {
+    background-color: #3f5f9f;
+    transform: translateY(-1px);
+}
+
+.create-election-btn:active {
+    transform: translateY(0);
+}
+
+
+/* CREATE ELECTION RESPONSIVE */
+
+@media (max-width: 600px) {
+
+    .create-election-page {
+        padding: 25px 15px;
+    }
+
+    .create-election-container {
+        padding: 28px 20px;
+        border-radius: 14px;
+    }
+
+    .create-election-container h1 {
+        font-size: 26px;
+    }
+
+    .form-subtitle {
+        font-size: 14px;
+        margin-bottom: 25px;
+    }
+
+    .create-election-form {
+        gap: 17px;
     }
 
 }

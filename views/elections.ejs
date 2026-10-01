@@ -28,7 +28,7 @@
         <% elections .filter(election=> election.status === "ongoing")
             .forEach(election => { %>
 
-            <div class="election-card">
+            <div class="election-card" data-election-id="<%= eletion._id %>">
 
                 <h3>
                     <%= election.title %>
@@ -48,6 +48,12 @@
                     <i class="fa-solid fa-clock"></i>
                     Voting: <%= election.votingTime %>
                 </p>
+                <button class="make-completed-btn" data-election-id="<%= election._id %>">
+                    Make Completed
+                </button>
+                <a href="/vote/<%= election._id %>" class="vote-now-btn">
+                    Vote Now
+                </a>
 
             </div>
 
@@ -64,7 +70,7 @@
         <% elections .filter(election=> election.status === "upcoming")
             .forEach(election => { %>
 
-            <div class="election-card">
+            <div class="election-card" data-election-id="<%= election._id %>">
 
                 <h3>
                     <%= election.title %>
@@ -84,6 +90,9 @@
                     <i class="fa-solid fa-clock"></i>
                     Voting: <%= election.votingTime %>
                 </p>
+                <button class="make-ongoing-btn" data-election-id="<%= election._id %>">
+                    Make Ongoing
+                </button>
 
             </div>
 
@@ -100,7 +109,7 @@
         <% elections .filter(election=> election.status === "completed")
             .forEach(election => { %>
 
-            <div class="election-card">
+            <div class="election-card" data-election-id="<%= election._id %>">
 
                 <h3>
                     <%= election.title %>
@@ -121,6 +130,8 @@
                 <p>
                     Election completed successfully
                 </p>
+
+
 
             </div>
 

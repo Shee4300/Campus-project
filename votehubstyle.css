@@ -747,13 +747,16 @@ a {
 }
 
 .election-card {
+    width: 100%;
+    padding: 20px;
+
+    border-radius: 12px;
+    border: 1px solid #4f6fb3;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
 }
-
-
-
 
 .election-page .ongoing-elections:hover {
     transform: scale(1.05);
@@ -775,7 +778,12 @@ a {
 
 }
 
+.election-card {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 
+}
 
 .election-page .upcoming-elections:hover {
     transform: scale(1.05);
@@ -796,8 +804,11 @@ a {
     transition: transform 0.3s ease;
 }
 
-
-
+.election-card {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
 
 .election-page .completed-elections:hover {
     transform: scale(1.05);
@@ -1743,4 +1754,17 @@ footer {
         gap: 17px;
     }
 
+}
+
+.make-completed-btn,
+.make-ongoing-btn,
+.vote-now-btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    background-color: #4f6fb3;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    font-family: inherit;
 }

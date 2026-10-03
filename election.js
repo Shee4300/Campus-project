@@ -1,4 +1,5 @@
-//register form  
+console.log("ELECTION JS FILE LOADED");
+//register form 
 let registerForm = document.getElementById("register-form");
 if (registerForm) {
     registerForm.addEventListener("submit", async function (event) {
@@ -38,7 +39,7 @@ if (registerForm) {
             })
             const data = await response.json();
             if (response.ok) {
-                console.log("JWT TOKEN:", data.token);
+
                 alert(data.message);
                 window.location.href = "/";
             } else {
@@ -112,8 +113,10 @@ if (loginForm) {
             const data = await response.json();
 
             if (response.ok) {
+                console.log("LOGIN SUCCESS");
+                console.log("JWT TOKEN:", data.token);
                 alert(data.message);
-                window.location.href = "/";
+                //window.location.href = "/";
             } else {
                 alert(data.message);
             }
@@ -228,8 +231,53 @@ if (calendar) {
     });
 
 }
-// RESOURCES  
+let voteForm = document.getElementById("vote-form");
 
+if (voteForm) {
+    voteForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const selectedCandidate = document.querySelector(
+            'input[name="candidate"]:checked'
+        );
+        if (!selectedCandidate) {
+            alert("Please select a candidate");
+            return;
+        }
+        const candidateId = selectedCandidate.value;
+        const electionId = voteForm.dataset.electionId;
+
+        console.log("Election ID:", electionId);
+        console.log("Candidate ID:", candidateId);
+
+        console.log("Selected Candidate ID:", candidateId);
+        const response = await fetch("/api/votes", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                election: electionId,
+                candidate: candidateId
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert(data.message);
+        } else {
+            alert(data.message);
+        }
+    });
+}
+
+
+
+
+
+
+// RESOURCES
 let resourceCards = document.querySelectorAll(".resource-card");
 
 resourceCards.forEach(function (card) {

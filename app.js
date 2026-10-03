@@ -1,3 +1,5 @@
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
 require("dotenv").config();
 
 const express = require("express");
@@ -13,12 +15,26 @@ const Vote = require("./models/Vote");
 
 const app = express();
 
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        type: "OAuth2",
+        user: process.env.EMAIL_USER,
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        refreshToken: process.env.GOOGLE_REFRESH_TOKEN
+    },
+    tls: {
+        rejectUnauthorized: false
+    }
+});
+
+
 app.set("view engine", "ejs");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-
 
 app.use(express.static("public"));
 app.use("/videos", express.static("videos"));
@@ -26,6 +42,7 @@ app.use("/videos", express.static("videos"));
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
         console.log("MongoDB connected successfully");
+        console.log("DATABASE NAME:", mongoose.connection.name);
     })
     .catch((error) => {
         console.log("MongoDB connection error:", error);
@@ -95,6 +112,12 @@ app.post("/api/login", async (req, res) => {
         if (!isPasswordCorrect) {
             return res.status(401).json({
                 message: "Invalid password"
+            });
+        }
+
+        if (!user.isVerified) {
+            return res.status(403).json({
+                message: "Please verify your email first"
             });
         }
 
@@ -189,36 +212,135 @@ app.post("/api/register", async (req, res) => {
             });
         }
 
+        console.log("CHECKING EXISTING USER");
+
         const existingUser = await User.findOne({ email });
 
+        console.log("EXISTING USER RESULT:", existingUser);
+
+        // User already exists
         if (existingUser) {
-            return res.status(409).json({
-                message: "User already exists"
+
+            // Already verified account
+            if (existingUser.isVerified) {
+                return res.status(409).json({
+                    message: "User already exists"
+                });
+            }
+
+            // Account exists but email is not verified
+            const newVerificationToken =
+                crypto.randomBytes(32).toString("hex");
+
+            existingUser.name = name;
+            existingUser.number = number;
+            existingUser.password = await bcrypt.hash(
+                password,
+                10
+            );
+            existingUser.verificationToken =
+                newVerificationToken;
+
+            await existingUser.save();
+
+            console.log(
+                "UNVERIFIED USER UPDATED:",
+                existingUser
+            );
+
+            const verificationUrl =
+                `http://127.0.0.1:3000/verify-email/${newVerificationToken}`;
+            console.log(
+                "RESENDING VERIFICATION EMAIL TO:",
+                email
+            );
+
+            await transporter.sendMail({
+                from: process.env.EMAIL_USER,
+                to: email,
+                subject: "Verify your Campus Vote Email",
+                html: `
+                    <h2>Welcome to Campus Vote</h2>
+
+                    <p>
+                        Your Campus Vote account is already registered,
+                        but your email is not verified yet.
+                    </p>
+
+                    <p>
+                        Please click the link below to verify your email:
+                    </p>
+
+                    <a href="${verificationUrl}">
+                        Verify Email
+                    </a>
+
+                    <p>
+                        After verification, you can login to Campus Vote.
+                    </p>
+                `
+            });
+
+            return res.json({
+                message:
+                    "Your email is not verified yet. A new verification link has been sent to your email."
             });
         }
 
+        // New user
         const hashedPassword = await bcrypt.hash(
             password,
             10
         );
 
+        const verificationToken =
+            crypto.randomBytes(32).toString("hex");
+
         const newUser = new User({
             name,
             email,
             number,
-            password: hashedPassword
+            password: hashedPassword,
+            verificationToken
         });
 
         await newUser.save();
 
         console.log("USER SAVED:", newUser);
 
+        const verificationUrl =
+            `http://127.0.0.1:3000/verify-email/${verificationToken}`;
+        console.log("SENDING EMAIL TO:", email);
+
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Verify your Campus Vote Email",
+            html: `
+                <h2>Welcome to Campus Vote</h2>
+
+                <p>
+                    Please verify your email address by clicking
+                    the link below:
+                </p>
+
+                <a href="${verificationUrl}">
+                    Verify Email
+                </a>
+
+                <p>
+                    This link is used to activate your account.
+                </p>
+            `
+        });
+
         res.json({
-            message: "Registration successful"
+            message:
+                "Registration successful. Please check your email to verify your account."
         });
 
     } catch (error) {
-        console.log("SAVE ERROR:", error);
+        console.log("REGISTRATION ERROR:", error);
 
         res.status(500).json({
             message: "Registration failed"
@@ -226,9 +348,42 @@ app.post("/api/register", async (req, res) => {
     }
 });
 
+app.get("/verify-email/:token", async (req, res) => {
+    try {
+        const token = req.params.token;
+
+        const user = await User.findOne({
+            verificationToken: token
+        });
+
+        if (!user) {
+            return res.status(400).send(
+                "Invalid verification link"
+            );
+        }
+
+        user.isVerified = true;
+        user.verificationToken = undefined;
+
+        await user.save();
+
+        res.send(
+            "Email verified successfully! You can now login."
+        );
+
+    } catch (error) {
+        console.log("Verification error:", error);
+
+        res.status(500).send(
+            "Email verification failed"
+        );
+    }
+});
+
 app.get("/elections", async (req, res) => {
     try {
         const elections = await Election.find();
+
         console.log("ELECTIONS:", elections);
 
         res.render("elections", {
@@ -481,30 +636,42 @@ app.get("/candidates", async (req, res) => {
         );
     }
 });
+
 app.get("/vote/:electionId", async (req, res) => {
     try {
         const { electionId } = req.params;
-        const election = await Election.findById(electionId)
+
+        const election =
+            await Election.findById(electionId);
 
         if (!election) {
-            return res.status(404).send("Election not found");
+            return res.status(404).send(
+                "Election not found"
+            );
         }
-        const candidates = await Candidate.find({
-            election: electionId
-        });
+
+        const candidates =
+            await Candidate.find({
+                election: electionId
+            });
+
         res.render("vote", {
             election,
             candidates
         });
 
     } catch (error) {
-        console.log("Vote page error:", error);
+        console.log(
+            "Vote page error:",
+            error
+        );
 
         res.status(500).send(
             "Unable to load voting page"
         );
     }
 });
+
 app.get("/create-vote", async (req, res) => {
     try {
         const users = await User.find()
@@ -512,7 +679,6 @@ app.get("/create-vote", async (req, res) => {
 
         const elections =
             await Election.find();
-
 
         const candidates =
             await Candidate.find();
@@ -539,7 +705,6 @@ app.post(
     "/api/votes",
     authenticateToken,
     async (req, res) => {
-
         try {
             const {
                 election,

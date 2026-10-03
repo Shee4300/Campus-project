@@ -1,4 +1,4 @@
-const nodemailer = require("nodemailer");
+const { google } = require("googleapis");
 const crypto = require("crypto");
 require("dotenv").config();
 
@@ -14,24 +14,86 @@ const Candidate = require("./models/Candidate");
 const Vote = require("./models/Vote");
 
 const app = express();
-app.set("trust proxy", 1);
 
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-        type: "OAuth2",
-        user: process.env.EMAIL_USER,
-        clientId: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        refreshToken: process.env.GOOGLE_REFRESH_TOKEN
-    },
-    tls: {
-        rejectUnauthorized: false
-    }
+const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET
+);
+
+oauth2Client.setCredentials({
+    refresh_token: process.env.GOOGLE_REFRESH_TOKEN
 });
 
+const gmail = google.gmail({
+    version: "v1",
+    auth: oauth2Client
+});
+
+async function sendVerificationEmail(to, verificationUrl, isResend = false) {
+    const subject = "Verify your Campus Vote Email";
+
+    const html = isResend
+        ? `
+            <h2>Welcome to Campus Vote</h2>
+
+            <p>
+                Your Campus Vote account is already registered,
+                but your email is not verified yet.
+            </p>
+
+            <p>
+                Please click the link below to verify your email:
+            </p>
+
+            <a href="${verificationUrl}">
+                Verify Email
+            </a>
+
+            <p>
+                After verification, you can login to Campus Vote.
+            </p>
+        `
+        : `
+            <h2>Welcome to Campus Vote</h2>
+
+            <p>
+                Please verify your email address by clicking
+                the link below:
+            </p>
+
+            <a href="${verificationUrl}">
+                Verify Email
+            </a>
+
+            <p>
+                This link is used to activate your account.
+            </p>
+        `;
+
+    const message =
+        `From: Campus Vote <${process.env.EMAIL_USER}>\r\n` +
+        `To: ${to}\r\n` +
+        `Subject: ${subject}\r\n` +
+        `MIME-Version: 1.0\r\n` +
+        `Content-Type: text/html; charset=UTF-8\r\n\r\n` +
+        html;
+
+    const encodedMessage = Buffer
+        .from(message, "utf8")
+        .toString("base64")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");
+
+    await gmail.users.messages.send({
+        userId: "me",
+        requestBody: {
+            raw: encodedMessage
+        }
+    });
+
+    console.log("VERIFICATION EMAIL SENT TO:", to);
+}
 
 app.set("view engine", "ejs");
 
@@ -221,17 +283,14 @@ app.post("/api/register", async (req, res) => {
 
         console.log("EXISTING USER RESULT:", existingUser);
 
-        // User already exists
         if (existingUser) {
 
-            // Already verified account
             if (existingUser.isVerified) {
                 return res.status(409).json({
                     message: "User already exists"
                 });
             }
 
-            // Account exists but email is not verified
             const newVerificationToken =
                 crypto.randomBytes(32).toString("hex");
 
@@ -253,36 +312,17 @@ app.post("/api/register", async (req, res) => {
 
             const verificationUrl =
                 `${req.protocol}://${req.get("host")}/verify-email/${newVerificationToken}`;
+
             console.log(
                 "RESENDING VERIFICATION EMAIL TO:",
                 email
             );
 
-            await transporter.sendMail({
-                from: process.env.EMAIL_USER,
-                to: email,
-                subject: "Verify your Campus Vote Email",
-                html: `
-                    <h2>Welcome to Campus Vote</h2>
-
-                    <p>
-                        Your Campus Vote account is already registered,
-                        but your email is not verified yet.
-                    </p>
-
-                    <p>
-                        Please click the link below to verify your email:
-                    </p>
-
-                    <a href="${verificationUrl}">
-                        Verify Email
-                    </a>
-
-                    <p>
-                        After verification, you can login to Campus Vote.
-                    </p>
-                `
-            });
+            await sendVerificationEmail(
+                email,
+                verificationUrl,
+                true
+            );
 
             return res.json({
                 message:
@@ -290,7 +330,6 @@ app.post("/api/register", async (req, res) => {
             });
         }
 
-        // New user
         const hashedPassword = await bcrypt.hash(
             password,
             10
@@ -312,31 +351,15 @@ app.post("/api/register", async (req, res) => {
         console.log("USER SAVED:", newUser);
 
         const verificationUrl =
-
             `${req.protocol}://${req.get("host")}/verify-email/${verificationToken}`;
+
         console.log("SENDING EMAIL TO:", email);
 
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: "Verify your Campus Vote Email",
-            html: `
-                <h2>Welcome to Campus Vote</h2>
-
-                <p>
-                    Please verify your email address by clicking
-                    the link below:
-                </p>
-
-                <a href="${verificationUrl}">
-                    Verify Email
-                </a>
-
-                <p>
-                    This link is used to activate your account.
-                </p>
-            `
-        });
+        await sendVerificationEmail(
+            email,
+            verificationUrl,
+            false
+        );
 
         res.json({
             message:

@@ -14,6 +14,7 @@ const Candidate = require("./models/Candidate");
 const Vote = require("./models/Vote");
 
 const app = express();
+app.set("trust proxy", 1);
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -249,7 +250,7 @@ app.post("/api/register", async (req, res) => {
             );
 
             const verificationUrl =
-                `http://127.0.0.1:3000/verify-email/${newVerificationToken}`;
+                `${req.protocol}://${req.get("host")}/verify-email/${verificationToken}`;
             console.log(
                 "RESENDING VERIFICATION EMAIL TO:",
                 email
@@ -309,7 +310,8 @@ app.post("/api/register", async (req, res) => {
         console.log("USER SAVED:", newUser);
 
         const verificationUrl =
-            `http://127.0.0.1:3000/verify-email/${verificationToken}`;
+
+            `${req.protocol}://${req.get("host")}/verify-email/${newVerificationToken}`;
         console.log("SENDING EMAIL TO:", email);
 
         await transporter.sendMail({

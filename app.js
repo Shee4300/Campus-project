@@ -250,7 +250,7 @@ app.post("/api/register", async (req, res) => {
             );
 
             const verificationUrl =
-                `${req.protocol}://${req.get("host")}/verify-email/${verificationToken}`;
+                `${req.protocol}://${req.get("host")}/verify-email/${newVerificationToken}`;
             console.log(
                 "RESENDING VERIFICATION EMAIL TO:",
                 email
@@ -311,7 +311,7 @@ app.post("/api/register", async (req, res) => {
 
         const verificationUrl =
 
-            `${req.protocol}://${req.get("host")}/verify-email/${newVerificationToken}`;
+            `${req.protocol}://${req.get("host")}/verify-email/${verificationToken}`;
         console.log("SENDING EMAIL TO:", email);
 
         await transporter.sendMail({

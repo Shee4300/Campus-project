@@ -116,7 +116,7 @@ if (loginForm) {
                 console.log("LOGIN SUCCESS");
                 console.log("JWT TOKEN:", data.token);
                 alert(data.message);
-                //window.location.href = "/";
+                window.location.href = "/";
             } else {
                 alert(data.message);
             }
@@ -371,6 +371,6 @@ if (logoutButton) {
 
         alert("You have been logged out.");
 
-        window.location.href = "login.html";
+        window.location.href = "/login";
     });
 }

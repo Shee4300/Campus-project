@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Elections section</title>
+    <title>Elections | Campus Vote</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 
@@ -20,149 +20,212 @@
 
 <body class="election-page">
 
-    <!-- Ongoing Elections -->
+    <!-- ONGOING ELECTIONS -->
+
     <section class="ongoing-elections" id="ongoing">
 
         <h3>Ongoing Elections</h3>
 
-        <% elections .filter(election=> election.status === "ongoing")
-            .forEach(election => { %>
-            <div class="election-card" data-election-id="<%= election._id %>">
+        <% const ongoingElections=elections.filter(election=> election.status === "ongoing"); %>
 
-                <h3>
-                    <%= election.title %>
-                </h3>
+            <% if (ongoingElections.length===0) { %>
 
-                <p>
-                    <i class="fa-solid fa-circle"></i>
-                    Status: <%= election.status %>
-                </p>
+                <div class="election-card">
+                    <h3>No ongoing elections</h3>
+                    <p>There are currently no elections open for voting.</p>
+                </div>
 
-                <p>
-                    <i class="fa-solid fa-calendar days"></i>
-                    <%= election.date %>
-                </p>
+                <% } else { %>
 
-                <p>
-                    <i class="fa-solid fa-clock"></i>
-                    Voting: <%= election.votingTime %>
-                </p>
-                <button class="make-completed-btn" data-election-id="<%= election._id %>">
-                    Make Completed
-                </button>
-                <a href="/vote/<%= election._id %>" class="vote-now-btn">
-                    Vote Now
-                </a>
+                    <% ongoingElections.forEach(election=> { %>
 
-            </div>
+                        <div class="election-card" data-election-id="<%= election._id %>">
 
-            <% }) %>
+                            <h3>
+                                <%= election.title %>
+                            </h3>
+
+                            <p>
+                                <i class="fa-solid fa-circle"></i>
+                                Status: <%= election.status %>
+                            </p>
+
+                            <p>
+                                <i class="fa-solid fa-calendar"></i>
+                                <%= election.date %>
+                            </p>
+
+                            <p>
+                                <i class="fa-solid fa-clock"></i>
+                                Voting Ends: <%= election.votingTime %>
+                            </p>
+
+                            <a href="/vote/<%= election._id %>" class="vote-now-btn">
+                                Vote Now
+                            </a>
+
+                            <button class="make-completed-btn" data-election-id="<%= election._id %>">
+                                Make Completed
+                            </button>
+
+                        </div>
+
+                        <% }) %>
+
+                            <% } %>
 
     </section>
 
 
-    <!-- Upcoming Elections -->
+    <!-- UPCOMING ELECTIONS -->
+
     <section class="upcoming-elections" id="upcoming">
 
         <h3>Upcoming Elections</h3>
 
-        <% elections .filter(election=> election.status === "upcoming")
-            .forEach(election => { %>
+        <% const upcomingElections=elections.filter(election=> election.status === "upcoming"); %>
 
-            <div class="election-card" data-election-id="<%= election._id %>">
+            <% if (upcomingElections.length===0) { %>
 
-                <h3>
-                    <%= election.title %>
-                </h3>
+                <div class="election-card">
+                    <h3>No upcoming elections</h3>
+                    <p>No upcoming elections are currently scheduled.</p>
+                </div>
 
-                <p>
-                    <i class="fa-solid fa-calendar"></i>
-                    Status: <%= election.status %>
-                </p>
+                <% } else { %>
 
-                <p>
-                    <i class="fa-solid fa-calendar days"></i>
-                    Date: <%= election.date %>
-                </p>
+                    <% upcomingElections.forEach(election=> { %>
 
-                <p>
-                    <i class="fa-solid fa-clock"></i>
-                    Voting: <%= election.votingTime %>
-                </p>
-                <button class="make-ongoing-btn" data-election-id="<%= election._id %>">
-                    Make Ongoing
-                </button>
+                        <div class="election-card" data-election-id="<%= election._id %>">
 
-            </div>
+                            <h3>
+                                <%= election.title %>
+                            </h3>
 
-            <% }) %>
+                            <p>
+                                <i class="fa-solid fa-calendar"></i>
+                                Status: <%= election.status %>
+                            </p>
+
+                            <p>
+                                <i class="fa-solid fa-calendar days"></i>
+                                Date: <%= election.date %>
+                            </p>
+
+                            <p>
+                                <i class="fa-solid fa-clock"></i>
+                                Voting: <%= election.votingTime %>
+                            </p>
+
+                            <button class="make-ongoing-btn" data-election-id="<%= election._id %>">
+                                Make Ongoing
+                            </button>
+
+                        </div>
+
+                        <% }) %>
+
+                            <% } %>
 
     </section>
 
 
-    <!-- Completed Elections -->
+    <!-- COMPLETED ELECTIONS -->
+
     <section class="completed-elections" id="completed">
 
         <h3>Completed Elections</h3>
 
-        <% elections .filter(election=> election.status === "completed")
-            .forEach(election => { %>
+        <% const completedElections=elections.filter(election=> election.status === "completed"); %>
 
-            <div class="election-card" data-election-id="<%= election._id %>">
+            <% if (completedElections.length===0) { %>
 
-                <h3>
-                    <%= election.title %>
-                </h3>
+                <div class="election-card">
+                    <h3>No completed elections</h3>
+                    <p>Completed elections will appear here.</p>
+                </div>
 
-                <p>
-                    Status: <%= election.status %>
-                </p>
+                <% } else { %>
 
-                <p>
-                    Election Date: <%= election.date %>
-                </p>
+                    <% completedElections.forEach(election=> { %>
 
-                <p>
-                    Period: <%= election.votingTime %>
-                </p>
+                        <div class="election-card" data-election-id="<%= election._id %>">
 
-                <p>
-                    Election completed successfully
-                </p>
+                            <h3>
+                                <%= election.title %>
+                            </h3>
 
+                            <p>
+                                <i class="fa-solid fa-circle-check"></i>
+                                Status: <%= election.status %>
+                            </p>
 
+                            <p>
+                                <i class="fa-solid fa-calendar"></i>
+                                Election Date: <%= election.date %>
+                            </p>
 
-            </div>
+                            <p>
+                                <i class="fa-solid fa-clock"></i>
+                                Voting Time: <%= election.votingTime %>
+                            </p>
 
-            <% }) %>
+                            <p>
+                                Election completed successfully
+                            </p>
+
+                        </div>
+
+                        <% }) %>
+
+                            <% } %>
 
     </section>
 
 
-    <!-- Election Calendar -->
+    <!-- ELECTION CALENDAR -->
+
     <section class="election-calendar" id="calendar">
 
         <h3>Election Calendar</h3>
 
-        <% elections.forEach(election=> { %>
+        <% if (elections.length===0) { %>
 
             <div class="calendar-event">
 
-                <h3>
-                    <%= election.title %>
-                </h3>
+                <h3>No elections scheduled</h3>
 
                 <p>
-                    <%= election.date %>
-                </p>
-
-                <p>
-                    Voting Day
+                    Election dates will appear here once elections are created.
                 </p>
 
             </div>
 
-            <% }) %>
+            <% } else { %>
+
+                <% elections.forEach(election=> { %>
+
+                    <div class="calendar-event">
+
+                        <h3>
+                            <%= election.title %>
+                        </h3>
+
+                        <p>
+                            <i class="fa-solid fa-calendar"></i>
+                            <%= election.date %>
+                        </p>
+
+                        <p>
+                            <i class="fa-solid fa-check"></i>
+                            Voting Day
+                        </p>
+
+                    </div>
+
+                    <% }) %>
+
+                        <% } %>
 
     </section>
 

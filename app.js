@@ -413,7 +413,7 @@ app.get("/elections", async (req, res) => {
 
         console.log("ELECTIONS:", elections);
 
-        res.render("elections", {
+        res.render("elections-live", {
             elections
         });
 

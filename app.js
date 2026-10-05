@@ -475,377 +475,378 @@ app.post("/api/elections", async (req, res) => {
         });
 
     }
+});
 
-    app.post("/api/elections/ongoing", async (req, res) => {
-        try {
-            const { electionId } = req.body;
+app.post("/api/elections/ongoing", async (req, res) => {
+    try {
+        const { electionId } = req.body;
 
-            if (!electionId) {
-                return res.status(400).json({
-                    message: "Election ID is required"
-                });
-            }
-
-            const election =
-                await Election.findByIdAndUpdate(
-                    electionId,
-                    {
-                        status: "ongoing"
-                    },
-                    {
-                        new: true
-                    }
-                );
-
-            if (!election) {
-                return res.status(404).json({
-                    message: "Election not found"
-                });
-            }
-
-            res.json({
-                message: "Election is now ongoing",
-                election
+        if (!electionId) {
+            return res.status(400).json({
+                message: "Election ID is required"
             });
+        }
 
-        } catch (error) {
-            console.log(
-                "Ongoing Election Error:",
-                error
+        const election =
+            await Election.findByIdAndUpdate(
+                electionId,
+                {
+                    status: "ongoing"
+                },
+                {
+                    new: true
+                }
             );
 
-            res.status(500).json({
+        if (!election) {
+            return res.status(404).json({
+                message: "Election not found"
+            });
+        }
+
+        res.json({
+            message: "Election is now ongoing",
+            election
+        });
+
+    } catch (error) {
+        console.log(
+            "Ongoing Election Error:",
+            error
+        );
+
+        res.status(500).json({
+            message:
+                "Election could not be made ongoing"
+        });
+    }
+});
+
+app.post("/api/elections/completed", async (req, res) => {
+    try {
+        const { electionId } = req.body;
+
+        if (!electionId) {
+            return res.status(400).json({
+                message: "Election ID is required"
+            });
+        }
+
+        const election =
+            await Election.findByIdAndUpdate(
+                electionId,
+                {
+                    status: "completed"
+                },
+                {
+                    new: true
+                }
+            );
+
+        if (!election) {
+            return res.status(404).json({
+                message: "Election not found"
+            });
+        }
+
+        res.json({
+            message: "Election is now completed",
+            election
+        });
+
+    } catch (error) {
+        console.log(
+            "Completed Election Error:",
+            error
+        );
+
+        res.status(500).json({
+            message:
+                "Election could not be completed"
+        });
+    }
+});
+
+app.get("/create-candidate", async (req, res) => {
+    try {
+        const elections = await Election.find();
+
+        res.render("create-candidate", {
+            elections
+        });
+
+    } catch (error) {
+        console.log(
+            "Election fetch error:",
+            error
+        );
+
+        res.status(500).send(
+            "Unable to load elections"
+        );
+    }
+});
+
+app.post("/api/candidates", async (req, res) => {
+    try {
+        const {
+            name,
+            position,
+            election
+        } = req.body;
+
+        if (!name || !position || !election) {
+            return res.status(400).json({
                 message:
-                    "Election could not be made ongoing"
+                    "Please fill all candidate fields"
             });
         }
-    });
 
-    app.post("/api/elections/completed", async (req, res) => {
-        try {
-            const { electionId } = req.body;
+        const electionExists =
+            await Election.findById(election);
 
-            if (!electionId) {
-                return res.status(400).json({
-                    message: "Election ID is required"
-                });
-            }
-
-            const election =
-                await Election.findByIdAndUpdate(
-                    electionId,
-                    {
-                        status: "completed"
-                    },
-                    {
-                        new: true
-                    }
-                );
-
-            if (!election) {
-                return res.status(404).json({
-                    message: "Election not found"
-                });
-            }
-
-            res.json({
-                message: "Election is now completed",
-                election
-            });
-
-        } catch (error) {
-            console.log(
-                "Completed Election Error:",
-                error
-            );
-
-            res.status(500).json({
-                message:
-                    "Election could not be completed"
+        if (!electionExists) {
+            return res.status(404).json({
+                message: "Election not found"
             });
         }
-    });
 
-    app.get("/create-candidate", async (req, res) => {
-        try {
-            const elections = await Election.find();
+        const newCandidate = new Candidate({
+            name,
+            position,
+            election
+        });
 
-            res.render("create-candidate", {
-                elections
-            });
+        await newCandidate.save();
 
-        } catch (error) {
-            console.log(
-                "Election fetch error:",
-                error
-            );
+        console.log(
+            "CANDIDATE SAVED:",
+            newCandidate
+        );
 
-            res.status(500).send(
-                "Unable to load elections"
+        res.json({
+            message:
+                "Candidate created successfully",
+            candidate: newCandidate
+        });
+
+    } catch (error) {
+        console.log(
+            "Candidate Error:",
+            error
+        );
+
+        res.status(500).json({
+            message:
+                "Candidate creation failed"
+        });
+    }
+});
+
+app.get("/candidates", async (req, res) => {
+    try {
+        const candidates =
+            await Candidate.find()
+                .populate("election");
+
+        res.render("candidates", {
+            candidates
+        });
+
+    } catch (error) {
+        console.log(
+            "Candidate fetch error:",
+            error
+        );
+
+        res.status(500).send(
+            "Unable to load candidates"
+        );
+    }
+});
+
+app.get("/vote/:electionId", async (req, res) => {
+    try {
+        const { electionId } = req.params;
+
+        const election =
+            await Election.findById(electionId);
+
+        if (!election) {
+            return res.status(404).send(
+                "Election not found"
             );
         }
-    });
 
-    app.post("/api/candidates", async (req, res) => {
+        const candidates =
+            await Candidate.find({
+                election: electionId
+            });
+
+        res.render("vote", {
+            election,
+            candidates
+        });
+
+    } catch (error) {
+        console.log(
+            "Vote page error:",
+            error
+        );
+
+        res.status(500).send(
+            "Unable to load voting page"
+        );
+    }
+});
+
+app.get("/create-vote", async (req, res) => {
+    try {
+        const users = await User.find()
+            .select("-password");
+
+        const elections =
+            await Election.find();
+
+        const candidates =
+            await Candidate.find();
+
+        res.render("create-vote", {
+            users,
+            elections,
+            candidates
+        });
+
+    } catch (error) {
+        console.log(
+            "Vote page fetch error:",
+            error
+        );
+
+        res.status(500).send(
+            "Unable to load vote page"
+        );
+    }
+});
+
+app.post(
+    "/api/votes",
+    authenticateToken,
+    async (req, res) => {
         try {
             const {
-                name,
-                position,
-                election
+                election,
+                candidate
             } = req.body;
 
-            if (!name || !position || !election) {
+            const user = req.user.userId;
+
+            if (!election || !candidate) {
                 return res.status(400).json({
                     message:
-                        "Please fill all candidate fields"
+                        "Election and candidate are required"
                 });
             }
 
-            const electionExists =
+            const selectedElection =
                 await Election.findById(election);
 
-            if (!electionExists) {
+            if (!selectedElection) {
                 return res.status(404).json({
-                    message: "Election not found"
+                    message:
+                        "Election not found"
                 });
             }
 
-            const newCandidate = new Candidate({
-                name,
-                position,
-                election
+            if (selectedElection.status !== "ongoing") {
+                return res.status(400).json({
+                    message:
+                        "Voting is not open for this election"
+                });
+            }
+
+            const selectedCandidate =
+                await Candidate.findById(candidate);
+
+            if (!selectedCandidate) {
+                return res.status(404).json({
+                    message:
+                        "Candidate not found"
+                });
+            }
+
+            if (
+                selectedCandidate.election.toString() !==
+                election.toString()
+            ) {
+                return res.status(400).json({
+                    message:
+                        "Candidate does not belong to this election"
+                });
+            }
+
+            const existingVote =
+                await Vote.findOne({
+                    user,
+                    election
+                });
+
+            if (existingVote) {
+                return res.status(409).json({
+                    message:
+                        "You have already voted in this election"
+                });
+            }
+
+            const newVote = new Vote({
+                user,
+                election,
+                candidate
             });
 
-            await newCandidate.save();
+            await newVote.save();
 
             console.log(
-                "CANDIDATE SAVED:",
-                newCandidate
+                "VOTE SAVED:",
+                newVote
             );
 
             res.json({
                 message:
-                    "Candidate created successfully",
-                candidate: newCandidate
+                    "Vote submitted successfully",
+                vote: newVote
             });
 
         } catch (error) {
             console.log(
-                "Candidate Error:",
+                "Vote error:",
                 error
             );
 
             res.status(500).json({
                 message:
-                    "Candidate creation failed"
+                    "Vote submission failed"
             });
         }
-    });
+    }
+);
 
-    app.get("/candidates", async (req, res) => {
-        try {
-            const candidates =
-                await Candidate.find()
-                    .populate("election");
+app.get("/resources", (req, res) => {
+    res.render("resources");
+});
 
-            res.render("candidates", {
-                candidates
-            });
+app.get("/pricing", (req, res) => {
+    res.render("pricing");
+});
 
-        } catch (error) {
-            console.log(
-                "Candidate fetch error:",
-                error
-            );
+app.get("/contact", (req, res) => {
+    res.render("contact");
+});
 
-            res.status(500).send(
-                "Unable to load candidates"
-            );
-        }
-    });
+const PORT = process.env.PORT || 3000;
 
-    app.get("/vote/:electionId", async (req, res) => {
-        try {
-            const { electionId } = req.params;
-
-            const election =
-                await Election.findById(electionId);
-
-            if (!election) {
-                return res.status(404).send(
-                    "Election not found"
-                );
-            }
-
-            const candidates =
-                await Candidate.find({
-                    election: electionId
-                });
-
-            res.render("vote", {
-                election,
-                candidates
-            });
-
-        } catch (error) {
-            console.log(
-                "Vote page error:",
-                error
-            );
-
-            res.status(500).send(
-                "Unable to load voting page"
-            );
-        }
-    });
-
-    app.get("/create-vote", async (req, res) => {
-        try {
-            const users = await User.find()
-                .select("-password");
-
-            const elections =
-                await Election.find();
-
-            const candidates =
-                await Candidate.find();
-
-            res.render("create-vote", {
-                users,
-                elections,
-                candidates
-            });
-
-        } catch (error) {
-            console.log(
-                "Vote page fetch error:",
-                error
-            );
-
-            res.status(500).send(
-                "Unable to load vote page"
-            );
-        }
-    });
-
-    app.post(
-        "/api/votes",
-        authenticateToken,
-        async (req, res) => {
-            try {
-                const {
-                    election,
-                    candidate
-                } = req.body;
-
-                const user = req.user.userId;
-
-                if (!election || !candidate) {
-                    return res.status(400).json({
-                        message:
-                            "Election and candidate are required"
-                    });
-                }
-
-                const selectedElection =
-                    await Election.findById(election);
-
-                if (!selectedElection) {
-                    return res.status(404).json({
-                        message:
-                            "Election not found"
-                    });
-                }
-
-                if (selectedElection.status !== "ongoing") {
-                    return res.status(400).json({
-                        message:
-                            "Voting is not open for this election"
-                    });
-                }
-
-                const selectedCandidate =
-                    await Candidate.findById(candidate);
-
-                if (!selectedCandidate) {
-                    return res.status(404).json({
-                        message:
-                            "Candidate not found"
-                    });
-                }
-
-                if (
-                    selectedCandidate.election.toString() !==
-                    election.toString()
-                ) {
-                    return res.status(400).json({
-                        message:
-                            "Candidate does not belong to this election"
-                    });
-                }
-
-                const existingVote =
-                    await Vote.findOne({
-                        user,
-                        election
-                    });
-
-                if (existingVote) {
-                    return res.status(409).json({
-                        message:
-                            "You have already voted in this election"
-                    });
-                }
-
-                const newVote = new Vote({
-                    user,
-                    election,
-                    candidate
-                });
-
-                await newVote.save();
-
-                console.log(
-                    "VOTE SAVED:",
-                    newVote
-                );
-
-                res.json({
-                    message:
-                        "Vote submitted successfully",
-                    vote: newVote
-                });
-
-            } catch (error) {
-                console.log(
-                    "Vote error:",
-                    error
-                );
-
-                res.status(500).json({
-                    message:
-                        "Vote submission failed"
-                });
-            }
-        }
+app.listen(PORT, () => {
+    console.log(
+        `Server running on port ${PORT}`
     );
-
-    app.get("/resources", (req, res) => {
-        res.render("resources");
-    });
-
-    app.get("/pricing", (req, res) => {
-        res.render("pricing");
-    });
-
-    app.get("/contact", (req, res) => {
-        res.render("contact");
-    });
-
-    const PORT = process.env.PORT || 3000;
-
-    app.listen(PORT, () => {
-        console.log(
-            `Server running on port ${PORT}`
-        );
-    });
+});

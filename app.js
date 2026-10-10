@@ -419,10 +419,7 @@ app.get("/elections", async (req, res) => {
 
     } catch (error) {
         console.log("Election fetch error:", error);
-
-        res.status(500).send(
-            "Unable to load elections"
-        );
+        res.status(500).send(error.message);
     }
 });
 

@@ -104,6 +104,14 @@ app.use(cookieParser());
 app.use(express.static("public"));
 app.use("/videos", express.static("videos"));
 
+
+console.log("MONGO_URI exists:", !!process.env.MONGO_URI);
+
+console.log(
+    "MONGO_URI starts correctly:",
+    process.env.MONGO_URI?.startsWith("mongodb://") ||
+    process.env.MONGO_URI?.startsWith("mongodb+srv://")
+);
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
         console.log("MongoDB connected successfully");

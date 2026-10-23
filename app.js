@@ -147,6 +147,148 @@ app.get("/", (req, res) => {
 app.get("/login", (req, res) => {
     res.render("login");
 });
+app.get("/forgot-password", (req, res) => {
+    res.render("forgot-password");
+});
+
+app.get("/reset-password/:token", (req, res) => {
+    res.render("reset-password");
+});
+
+
+app.post("/api/reset-password/:token", async (req, res) => {
+    try {
+        const { password } = req.body;
+        const token = req.params.token;
+
+        if (!password || password.length < 8) {
+            return res.status(400).json({
+                message: "Password must be at least 8 characters."
+            });
+        }
+
+        const hashedToken = crypto
+            .createHash("sha256")
+            .update(token)
+            .digest("hex");
+
+        const user = await User.findOne({
+            resetPasswordToken: hashedToken,
+            resetPasswordExpires: { $gt: Date.now() }
+        });
+
+        if (!user) {
+            return res.status(400).json({
+                message: "Reset link is invalid or has expired."
+            });
+        }
+
+        user.password = await bcrypt.hash(password, 10);
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+
+        await user.save();
+
+        res.json({
+            message: "Password reset successful! You can now log in."
+        });
+
+    } catch (error) {
+        console.error("RESET PASSWORD ERROR:", error);
+
+        res.status(500).json({
+            message: "Unable to reset password. Please try again."
+        });
+    }
+});
+
+
+app.post("/api/forgot-password", async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                message: "Please enter your email."
+            });
+        }
+
+        const user = await User.findOne({
+            email: email.trim().toLowerCase()
+        });
+
+        // Do not reveal whether an account exists.
+        if (!user) {
+            return res.json({
+                message: "If this email is registered, a reset link will be sent."
+            });
+        }
+
+        const resetToken = crypto.randomBytes(32).toString("hex");
+
+        user.resetPasswordToken = crypto
+            .createHash("sha256")
+            .update(resetToken)
+            .digest("hex");
+
+        user.resetPasswordExpires = Date.now() + 15 * 60 * 1000;
+
+        await user.save();
+
+        const baseUrl = process.env.APP_URL;
+
+        if (!baseUrl) {
+            throw new Error("APP_URL is not configured.");
+        }
+
+        const resetUrl =
+            `${baseUrl}/reset-password/${resetToken}`;
+
+        const subject = "Reset Your Campus Vote Password";
+
+        const html = `
+            <h2>Campus Vote Password Reset</h2>
+            <p>We received a request to reset your password.</p>
+            <p>This link expires in 15 minutes.</p>
+            <a href="${resetUrl}">Reset Password</a>
+            <p>If you did not request this, ignore this email.</p>
+        `;
+
+        const message =
+            `From: Campus Vote <${process.env.EMAIL_USER}>\r\n` +
+            `To: ${user.email}\r\n` +
+            `Subject: ${subject}\r\n` +
+            `MIME-Version: 1.0\r\n` +
+            `Content-Type: text/html; charset=UTF-8\r\n\r\n` +
+            html;
+
+        const encodedMessage = Buffer
+            .from(message, "utf8")
+            .toString("base64")
+            .replace(/\+/g, "-")
+            .replace(/\//g, "_")
+            .replace(/=+$/, "");
+
+        await gmail.users.messages.send({
+            userId: "me",
+            requestBody: {
+                raw: encodedMessage
+            }
+        });
+
+        res.json({
+            message: "If this email is registered, a reset link will be sent."
+        });
+
+    } catch (error) {
+        console.error("FORGOT PASSWORD ERROR:", error);
+
+        res.status(500).json({
+            message: "Unable to send reset email. Please try again later."
+        });
+    }
+});
+
 
 app.post("/api/login", async (req, res) => {
     console.log("LOGIN ROUTE HIT");
